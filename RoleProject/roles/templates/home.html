@@ -1,0 +1,358 @@
+
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CommitsDB | Enterprise Employee Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-dark: #001f3f;
+            --accent-blue: #4682B4;
+            --sky-blue: #87CEEB;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--primary-dark);
+            color: #ffffff;
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* --- ANIMATED BACKGROUND --- */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, #001f3f 0%, #000b1a 100%);
+            overflow: hidden;
+        }
+
+        .blob {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: linear-gradient(135deg, rgba(70, 130, 180, 0.3) 0%, rgba(135, 206, 235, 0.3) 100%);
+            filter: blur(80px);
+            border-radius: 50%;
+            z-index: -1;
+            animation: move 20s infinite alternate;
+        }
+
+        .blob-1 { top: -100px; left: -100px; animation-duration: 15s; }
+        .blob-2 { bottom: -100px; right: -100px; background: rgba(0, 31, 63, 0.5); animation-duration: 25s; }
+        .blob-3 { top: 40%; left: 30%; width: 300px; height: 300px; background: rgba(135, 206, 235, 0.2); animation-duration: 20s; }
+
+        @keyframes move {
+            from { transform: translate(0, 0) scale(1); }
+            to { transform: translate(100px, 100px) scale(1.2); }
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 8%;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            background: rgba(0, 31, 63, 0.7);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .logo { font-size: 26px; font-weight: 800; color: var(--sky-blue); letter-spacing: -1px; }
+        .nav-links { list-style: none; display: flex; gap: 30px; }
+        .nav-links a { text-decoration: none; color: white; font-weight: 500; transition: 0.3s; opacity: 0.8; }
+        .nav-links a:hover { opacity: 1; color: var(--sky-blue); }
+
+        .auth-buttons .login-btn {
+            padding: 10px 25px;
+            background: var(--accent-blue);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        /* --- HERO --- */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
+            margin-bottom: 20px;
+            background: linear-gradient(to bottom, #fff 30%, var(--sky-blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        .hero p { font-size: 1.2rem; max-width: 700px; margin-bottom: 40px; color: rgba(255,255,255,0.8); }
+
+        /* --- ABOUT SECTION --- */
+        .about {
+            padding: 100px 8%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+            background: rgba(255,255,255,0.02);
+        }
+
+        .about-text h2 { font-size: 2.5rem; margin-bottom: 20px; color: var(--sky-blue); }
+        .about-text p { font-size: 1.1rem; color: rgba(255,255,255,0.8); margin-bottom: 20px; }
+        
+        .about-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .stat-item {
+            background: var(--glass-bg);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid var(--glass-border);
+            text-align: center;
+        }
+
+        .stat-item h4 { font-size: 2rem; color: #fff; }
+        .stat-item span { color: var(--sky-blue); font-size: 0.9rem; }
+
+        /* --- FEATURES --- */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            padding: 100px 8%;
+        }
+
+        .feature-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 40px;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .feature-card:hover { transform: translateY(-15px); background: rgba(255,255,255,0.15); }
+        .feature-card i { font-size: 45px; color: var(--sky-blue); margin-bottom: 20px; }
+        .feature-card h3 { margin-bottom: 15px; font-size: 1.5rem; }
+
+        /* --- FOOTER --- */
+        footer { padding: 60px 8% 30px; background: #000814; border-top: 1px solid var(--glass-border); }
+        .footer-content { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 40px; }
+        .footer-bottom { text-align: center; margin-top: 50px; color: #555; font-size: 14px; }
+
+        @media (max-width: 900px) {
+            .about { grid-template-columns: 1fr; text-align: center; }
+            .nav-links { display: none; }
+        }
+
+
+
+
+        .login-btn {
+    display: inline-block;
+    padding: 14px 32px;
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    text-decoration: none;
+    
+    /* The "Perfect" White Glass Base */
+    background: rgba(255, 255, 255, 0.95);
+    color: #020617; /* Deepest blue/black */
+    
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    
+    /* Layered Shadow: 1. Deep shadow for lift, 2. Blue glow for theme */
+    box-shadow: 
+        0 10px 20px -5px rgba(0, 0, 0, 0.5),
+        0 0 0 0 rgba(0, 112, 243, 0);
+    
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.login-btn:hover {
+    background: #ffffff;
+    transform: translateY(-3px);
+    color: #0070f3; /* Changes text to electric blue on hover */
+    
+    /* Expanding blue glow */
+    box-shadow: 
+        0 15px 30px -10px rgba(0, 0, 0, 0.6),
+        0 0 25px rgba(0, 112, 243, 0.4);
+}
+
+.login-btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Optional: Adding a subtle "shimmer" effect */
+.login-btn::after {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -60%;
+    width: 20%;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.4);
+    transform: rotate(30deg);
+    transition: all 0.6s ease;
+}
+
+.login-btn:hover::after {
+    left: 120%;
+}
+    </style>
+</head>
+<body>
+
+    <div class="bg-animation">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <nav>
+        <div class="logo">CommitsDB</div>
+        <ul class="nav-links">
+            <li><a href="#">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#">Support</a></li>
+        </ul>
+        <div class="auth-buttons">
+            <a href="{% url 'login' %}" class="login-btn">Portal Login</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1>Master Your Workflow.</h1>
+        <p>CommitsDB is the ultimate engine for team coordination, shift tracking, and leave management. Built for performance, designed for clarity.</p>
+        <div class="cta-group">
+            <a href="{% url 'register' %}" class="login-btn" style="background: white; color: var(--primary-dark);">Get Started Free</a>
+        </div>
+    </section>
+
+    <section class="about" id="about">
+        <div class="about-text">
+            <h2>The Future of Workforce Logistics</h2>
+            <p>CommitsDB was founded on a simple principle: complexity shouldn't hinder productivity. We provide enterprise-level tools that simplify shift scheduling and employee data management.</p>
+            <p>Whether you're managing a local team or a global workforce, our database-driven insights help you make better decisions, faster.</p>
+        </div>
+        <div class="about-stats">
+            <div class="stat-item">
+                <h4>99.9%</h4>
+                <span>Uptime Reliability</span>
+            </div>
+            <div class="stat-item">
+                <h4>10k+</h4>
+                <span>Active Commits</span>
+            </div>
+            <div class="stat-item">
+                <h4>24/7</h4>
+                <span>Smart Monitoring</span>
+            </div>
+            <div class="stat-item">
+                <h4>1-Click</h4>
+                <span>Report Export</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <div class="feature-card">
+            <i class="fas fa-calendar-alt"></i>
+            <h3>Shift Management</h3>
+            <p>Real-time shift tracking and automated scheduling for your entire workforce.</p>
+        </div>
+        <div class="feature-card">
+            <i class="fas fa-file-signature"></i>
+            <h3>Leave Requests</h3>
+            <p>Seamless digital submission and approval workflows for time-off requests.</p>
+        </div>
+        <div class="feature-card">
+            <i class="fas fa-bullhorn"></i>
+            <h3>Announcements</h3>
+            <p>Stay informed with company-wide news, upcoming meetings, and important team events.</p>
+        </div>
+        <div class="feature-card">
+            <i class="fas fa-clipboard-check"></i>
+            <h3>Leave Reports</h3>
+            <p>Access detailed summaries of your leave history and approval statuses.</p>
+        </div>
+        <div class="feature-card">
+            <i class="fas fa-chart-line"></i>
+            <h3>Live Analytics</h3>
+            <p>Monitor performance and attendance trends with built-in professional reporting.</p>
+        </div>
+        <div class="feature-card">
+            <i class="fas fa-user-shield"></i>
+            <h3>Secure Access</h3>
+            <p>Role-based permissions ensuring your sensitive company data stays protected.</p>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3 style="color: var(--sky-blue);">CommitsDB</h3>
+                <p>Empowering teams through <br> data-driven management.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Resources</h4>
+                <p>Documentation</p>
+                <p>System Status</p>
+            </div>
+            <div class="footer-section">
+                <h4>Social</h4>
+                <div style="display: flex; gap: 15px; font-size: 20px; margin-top: 10px;">
+                    <i class="fab fa-linkedin"></i>
+                    <i class="fab fa-twitter"></i>
+                    <i class="fab fa-github"></i>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2025 CommitsDB Technologies. Optimized for Excellence.
+        </div>
+    </footer>
+
+</body>
+</html> 

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    body { background: radial-gradient(circle at top, #0f172a 0%, #020617 100%); min-height: 100vh; color: #f8fafc; }
+    .glass-panel { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(15px); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 20px; padding: 30px; margin: 40px auto; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+    .table-glass { background: rgba(255, 255, 255, 0.02); border-radius: 12px; overflow: hidden; }
+    .table-glass thead { background: rgba(56, 189, 248, 0.1); color: #38bdf8; }
+    .table-glass td { color: #cbd5e1; border-color: rgba(255,255,255,0.05); }
+    .status-present { color: #4ade80; font-weight: bold; }
+    .status-absent { color: #f87171; font-weight: bold; }
+</style>
+
+<div class="container">
+    <div class="glass-panel">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 style="color: #38bdf8;"><i class="fas fa-calendar-check me-2"></i> Employee Attendance</h2>
+            <a href="{% url 'manager_dashboard' %}" class="btn btn-outline-info btn-sm">Back</a>
+        </div>
+
+        <div class="table-responsive table-glass">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Employee Name</th>
+                        <th>Date</th>
+                        <th>Clock In</th>
+                        <th>Clock Out</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in attendance_records %}
+                    <tr>
+                        <td>{{ record.user.username }}</td>
+                        <td>{{ record.date|date:"M d, Y" }}</td>
+                        <td>{{ record.clock_in|time:"H:i" }}</td>
+                        <td>{{ record.clock_out|time:"H:i"|default:"--" }}</td>
+                        <td>
+                            {% if record.is_present %}
+                                <span class="status-present">Present</span>
+                            {% else %}
+                                <span class="status-absent">Absent</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center py-4 text-muted">No attendance records found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

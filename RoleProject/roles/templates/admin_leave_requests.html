@@ -1,0 +1,167 @@
+{% block content %}
+<style>
+    /* Professional Dashboard Container */
+    .glass-panel {
+        background: rgba(15, 23, 42, 0.7);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border: 1px solid rgba(0, 188, 212, 0.3);
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+        margin-bottom: 50px;
+    }
+
+    /* Header Styling */
+    .dashboard-title {
+        color: #fff;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+    }
+
+    .dashboard-title i {
+        color: #00bcd4; /* Neon Cyan */
+    }
+
+    /* Table Arrangement Fixes */
+    .table {
+        color: #e2e8f0;
+        margin-top: 30px;
+        border-collapse: separate;
+        border-spacing: 0 8px; /* Adds space between rows */
+    }
+
+    .table thead th {
+        color: #00bcd4;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        border: none;
+        padding: 15px 10px;
+    }
+
+    .table tbody tr {
+        background: rgba(255, 255, 255, 0.03);
+        transition: all 0.3s ease;
+    }
+
+    .table tbody tr:hover {
+        background: rgba(0, 188, 212, 0.08);
+        transform: translateY(-2px);
+    }
+
+    .table td {
+        padding: 20px 10px;
+        vertical-align: middle;
+        border: none;
+    }
+
+    /* Rounded corners for the "separated" rows */
+    .table td:first-child { border-radius: 10px 0 0 10px; padding-left: 20px; }
+    .table td:last-child { border-radius: 0 10px 10px 0; padding-right: 20px; }
+
+    /* Custom Status Badges to match image_605f70.png */
+    .status-badge {
+        display: inline-block;
+        padding: 8px 16px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 0.75rem;
+        text-align: center;
+        min-width: 100px;
+    }
+
+    .status-pending { background: rgba(241, 196, 15, 0.2); color: #f1c40f; border: 1px solid #f1c40f; }
+    .status-approved { background: rgba(46, 204, 113, 0.2); color: #2ecc71; border: 1px solid #2ecc71; }
+    .status-rejected { background: rgba(231, 76, 60, 0.2); color: #e74c3c; border: 1px solid #e74c3c; }
+
+    .reason-text {
+        max-width: 200px;
+        color: #94a3b8;
+        display: block;
+        line-height: 1.4;
+    }
+
+    .btn-back {
+        border: 1px solid rgba(0, 188, 212, 0.5);
+        background: transparent;
+        color: #00bcd4;
+        font-weight: 600;
+        padding: 8px 20px;
+        border-radius: 8px;
+        transition: 0.3s;
+    }
+
+    .btn-back:hover {
+        background: #00bcd4;
+        color: #000;
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="glass-panel">
+        
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="dashboard-title mb-0">
+                <i class="fas fa-calendar-alt me-2"></i> All Employee Leave Requests
+            </h2>
+            <a href="{% url 'admin_dashboard' %}" class="btn btn-back">
+                <i class="fas fa-th-large me-1"></i> Dashboard
+            </a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Employee</th>
+                        <th>Leave Type</th>
+                        <th>Dates</th>
+                        <th>Reason</th>
+                        <th class="text-center">Status</th>
+                        <th>Submitted On</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for req in requests %}
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="bg-info rounded-circle me-3" style="width: 10px; height: 10px; box-shadow: 0 0 8px #00bcd4;"></div>
+                                <strong>{{ req.employee.username }}</strong>
+                            </div>
+                        </td>
+                        <td><span class="text-light">{{ req.get_leave_type_display }}</span></td>
+                        <td>
+                            <small class="d-block">{{ req.start_date }}</small>
+                            <small class="text-muted">to</small>
+                            <small class="d-block">{{ req.end_date }}</small>
+                        </td>
+                        <td>
+                            <span class="reason-text small italic">{{ req.reason|default:"No reason provided"|truncatechars:60 }}</span>
+                        </td>
+                        <td class="text-center">
+                            {% if req.status == 1 %}
+                                <span class="status-badge status-pending">Pending</span>
+                            {% elif req.status == 2 %}
+                                <span class="status-badge status-approved">Approved</span>
+                            {% else %}
+                                <span class="status-badge status-rejected">Rejected</span>
+                            {% endif %}
+                        </td>
+                        <td><span class="text-muted small">{{ req.submitted_on|date:"Y-m-d" }}</span></td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center py-5">
+                            <i class="fas fa-folder-open fa-3x text-muted mb-3 d-block"></i>
+                            <span class="text-muted">No leave requests found in the system.</span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock content %}

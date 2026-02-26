@@ -1,0 +1,145 @@
+{% extends "base.html" %} 
+{% load static %}
+
+{% block extra_css %}
+<style>
+    /* Basic Glassy/Dark Styling */
+    :root {
+        --glass-bg-base: rgba(41, 128, 185, 0.2);
+        --glass-border-color: rgba(255, 255, 255, 0.18);
+        --card-bg-subtle: rgba(52, 152, 219, 0.1); 
+        --info-glow: #00bcd4; 
+        --text-light: #ecf0f1;
+    }
+
+    body {
+        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+        min-height: 100vh;
+        color: var(--text-light);
+    }
+    
+    .glass-container {
+        background: var(--glass-bg-base); 
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-radius: 15px;
+        border: 1px solid var(--glass-border-color);
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        padding: 30px;
+        margin-top: 20px;
+    }
+
+    .card {
+        background: var(--card-bg-subtle);
+        border: none;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        color: var(--text-light);
+    }
+    
+    .card-header {
+        background-color: rgba(0, 188, 212, 0.8);
+        color: white;
+        font-weight: bold;
+        border-bottom: 1px solid var(--info-glow);
+    }
+    
+    /* Table Styling for readability */
+    .table thead th {
+        border-bottom: 2px solid var(--info-glow);
+        color: white;
+    }
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: rgba(255, 255, 255, 0.05); 
+    }
+    
+    /* Action Button styles */
+    .btn-approve {
+        background-color: #28a745;
+        border-color: #28a745;
+        color: white;
+    }
+    .btn-reject {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: white;
+    }
+    
+</style>
+{% endblock extra_css %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="glass-container">
+        
+        <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary mb-3">
+            <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
+        </a>
+        
+        <h2 class="mb-4 text-white"><i class="fas fa-check-circle me-2"></i> {{ page_title }}</h2>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="card">
+            <div class="card-header">
+                Pending Leave Requests ({% if requests %}{{ requests|length }}{% else %}0{% endif %} total)
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover mb-0 text-white" style="--bs-table-bg: transparent;">
+                        <thead>
+                            <tr>
+                                <th>Employee</th>
+                                <th>Type</th>
+                                <th>Period</th>
+                                <th>Reason</th>
+                                <th>Submitted</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for req in requests %}
+                            <tr>
+                                <td>{{ req.employee.first_name|default:req.employee.username }}</td>
+                                <td>{{ req.get_leave_type_display }}</td>
+                                <td>{{ req.start_date|date:"M j" }} to {{ req.end_date|date:"M j, Y" }}</td>
+                                <td>{{ req.reason|truncatechars:70 }}</td>
+                                <td>{{ req.submitted_on|date:"Y-m-d" }}</td>
+                                <td>
+                                    <form method="post" action="{% url 'manager_leave_action' pk=req.pk action='approve' %}" style="display:inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-approve me-1" title="Approve Request">
+                                            <i class="fas fa-thumbs-up"></i> Approve
+                                        </button>
+                                    </form>
+                                    
+                                    <form method="post" action="{% url 'manager_leave_action' pk=req.pk action='reject' %}" style="display:inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-reject" title="Reject Request">
+                                            <i class="fas fa-thumbs-down"></i> Reject
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center text-muted p-4">
+                                    <i class="fas fa-check-double me-2"></i> No pending leave requests at this time.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    /* --- THE BLUE-BLACK CORE --- */
+    body {
+        background: radial-gradient(circle at center, #001e3c 0%, #000000 100%);
+        background-attachment: fixed;
+        min-height: 100vh;
+        color: #f8fafc;
+        font-family: 'Inter', 'Plus Jakarta Sans', sans-serif;
+        padding-top: 50px;
+    }
+
+    .glass-container {
+        background: rgba(15, 23, 42, 0.7);
+        backdrop-filter: blur(20px) saturate(160%);
+        -webkit-backdrop-filter: blur(20px) saturate(160%);
+        border: 1px solid rgba(56, 189, 248, 0.2);
+        border-radius: 24px;
+        padding: 40px;
+        max-width: 800px;
+        margin: 0 auto;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+    }
+
+    .neon-text {
+        color: #38bdf8;
+        text-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+        font-weight: 800;
+        letter-spacing: -1px;
+    }
+
+    /* --- THE GLASSY SHIFT CARDS --- */
+    .shift-box {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(56, 189, 248, 0.1);
+        padding: 25px;
+        margin: 15px 0;
+        border-radius: 16px;
+        transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .shift-box:hover {
+        background: rgba(56, 189, 248, 0.08);
+        border-color: #38bdf8;
+        transform: scale(1.02);
+        box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
+    }
+
+    .shift-box::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 4px;
+        background: #38bdf8;
+        box-shadow: 0 0 10px #38bdf8;
+    }
+
+    .label {
+        color: #94a3b8;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 600;
+    }
+
+    .value {
+        color: #f1f5f9;
+        font-size: 1.1rem;
+        margin-bottom: 8px;
+    }
+
+    .no-shifts {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px dashed rgba(148, 163, 184, 0.3);
+        padding: 40px;
+        border-radius: 16px;
+        text-align: center;
+        color: #94a3b8;
+        font-style: italic;
+    }
+
+    .btn-back {
+        display: inline-block;
+        margin-top: 30px;
+        color: #38bdf8;
+        text-decoration: none;
+        font-weight: 600;
+        transition: 0.3s;
+    }
+
+    .btn-back:hover {
+        color: #fff;
+        transform: translateX(-5px);
+    }
+</style>
+
+<div class="container">
+    <div class="glass-container">
+        <div class="d-flex justify-content-between align-items-end mb-4">
+            <div>
+                <h1 class="neon-text mb-1">{{ page_title }}</h1>
+                <p class="text-muted mb-0">Active Commits for <strong>{{ user.username }}</strong></p>
+            </div>
+            <i class="fas fa-clock fa-3x text-info opacity-50"></i>
+        </div>
+
+        <hr style="border-color: rgba(255,255,255,0.1); margin: 30px 0;">
+
+        <div class="shift-list">
+            {% if shifts %}
+                {% for shift in shifts %}
+                    <div class="shift-box d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="label">Duty Date</div>
+                            <div class="value"><i class="far fa-calendar-alt me-2 text-info"></i>{{ shift.date|date:"l, M d, Y" }}</div>
+                            
+                            <div class="label mt-3">Active Hours</div>
+                            <div class="value"><i class="far fa-clock me-2 text-info"></i>{{ shift.start_time }} — {{ shift.end_time }}</div>
+                        </div>
+                        
+                        <div class="text-end">
+                            <div class="label">Assigned Operator</div>
+                            <div class="text-info fw-bold">{{ shift.employee.username|upper }}</div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-shifts">
+                    <i class="fas fa-inbox fa-3x mb-3 opacity-20"></i>
+                    <p>No active shift commits detected in the current cycle.</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <a href="{% url 'employee_dashboard' %}" class="btn-back">
+            <i class="fas fa-chevron-left me-2"></i> Return to Console
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,132 @@
+
+
+{% extends "base.html" %} 
+{% load static %}
+
+{# ---------------------- 🛑 BLOCK 1: CUSTOM STYLES 🛑 ---------------------- #}
+{% block extra_css %}
+<style>
+    /* --- CSS Variables for the Glassy/Dark Theme --- */
+    :root {
+        --glass-bg-base: rgba(41, 128, 185, 0.2); 
+        --glass-border-color: rgba(255, 255, 255, 0.18);
+        --card-bg-subtle: rgba(52, 152, 219, 0.1); 
+        --info-glow: #00bcd4; 
+        --text-light: #ecf0f1;
+        --text-muted: #bdc3c7;
+    }
+
+    /* Note: If base.html already sets the dark background/text color, you can remove 'body' styling */
+    body {
+        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+        min-height: 100vh;
+        color: var(--text-light);
+    }
+    
+    /* Apply Glassy Effect to the Main Container */
+    .glass-container {
+        background: var(--glass-bg-base); 
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-radius: 15px;
+        border: 1px solid var(--glass-border-color);
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        padding: 30px;
+        margin-top: 20px;
+    }
+
+    /* Style the Inner Card for Events */
+    .card {
+        background: var(--card-bg-subtle);
+        border: none;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    }
+    
+    .card-header {
+        background-color: rgba(0, 188, 212, 0.8);
+        color: white;
+        font-weight: bold;
+        border-bottom: 1px solid var(--info-glow);
+    }
+
+    /* Style the List Items */
+    .list-group-item {
+        background-color: transparent;
+        color: var(--text-light);
+        border-color: rgba(255, 255, 255, 0.1); 
+        transition: background-color 0.3s;
+    }
+    
+    .list-group-item:hover {
+        background-color: rgba(0, 188, 212, 0.1);
+    }
+
+    .list-group-item h5 {
+        color: #ffffff;
+    }
+
+    .list-group-item small {
+        color: var(--text-muted) !important;
+    }
+    
+    /* Style the Back button */
+    .btn-secondary {
+        background-color: rgba(149, 165, 166, 0.5); 
+        border: 1px solid #bdc3c7;
+        color: var(--text-light);
+    }
+    .btn-secondary:hover {
+        background-color: #95a5a6;
+        color: white;
+    }
+    
+    /* Style for the "No events" alert */
+    .alert-info {
+        background: rgba(255, 255, 255, 0.1); 
+        color: var(--text-light); 
+        border: none;
+    }
+</style>
+{% endblock extra_css %}
+
+{# ---------------------- 🛑 BLOCK 2: PAGE CONTENT 🛑 ---------------------- #}
+{% block content %}
+<div class="container mt-5">
+    
+    <div class="glass-container">
+        
+        <a href="{% url 'employee_dashboard' %}" class="btn btn-secondary mb-3">
+            <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
+        </a>
+        
+        <h2 class="text-white">{{ page_title }}</h2>
+
+        <div class="card">
+            <div class="card-header">Upcoming Published Events</div>
+            <div class="card-body">
+                {% if events %}
+                    <ul class="list-group list-group-flush">
+                        {% for event in events %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5>{{ event.title }}</h5>
+                                <p class="mb-0">{{ event.description }}</p>
+                                <small class="text-muted">
+                                    📅 {{ event.date|date:"F j, Y" }} at 🕒 {{ event.start_time|time:"g:i A" }} 
+                                    {% if event.location %} | 📍 {{ event.location }}{% endif %}
+                                </small>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <div class="alert alert-info mb-0">
+                        There are no scheduled company events at this time.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+    </div>
+</div>
+{% endblock content %}

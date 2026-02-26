@@ -1,0 +1,81 @@
+{% extends "base.html" %} 
+
+{% block title %}Manager Profile{% endblock %}
+
+{% block content %}
+<div class="container my-5 dashboard-wrapper"> 
+    <h1 class="text-center">{{ page_title }}</h1>
+    
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8">
+            <div class="profile-card p-4">
+                <img src="https://i.pravatar.cc/150?img={{ user.id }}" alt="Profile Picture" class="mb-3"> 
+                
+                <h2 class="text-white">{{ user.username|upper }}</h2>
+                <p><strong>Role:</strong> Manager</p>
+                <hr style="border-color: rgba(255, 255, 255, 0.2);">
+
+                <div class="text-start mt-4">
+                    <!-- <p><strong>First Name:</strong> {{ user.first_name }}</p>
+                    <p><strong>Last Name:</strong> {{ user.last_name }}</p> -->
+                    <p><strong>Email:</strong> {{ user.email }}</p>
+                    <p><strong>Joining Date:</strong> {{ user.date_joined|date:"M d, Y" }}</p>
+                </div>
+
+                </div>
+        </div>
+    </div>
+    <style>
+        /* 1. Set the background for the page to ensure the 'glass' effect is visible */
+body {
+    background: linear-gradient(135deg, #0f1626, #090c10); /* Dark blue-black gradient */
+    min-height: 100vh;
+    color: #f0f8ff; /* Light text color */
+}
+
+/* 2. Style the main profile card container */
+.profile-card {
+    /* Glassmorphism Key Properties */
+    background: rgba(10, 25, 40, 0.4); /* Semi-transparent Blue-Black */
+    backdrop-filter: blur(10px); /* The main "glass" effect */
+    -webkit-backdrop-filter: blur(10px); /* Safari support */
+
+    /* Card Styling */
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.18); /* Subtle light border */
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); /* Shadow for depth */
+    padding: 30px;
+    margin-top: 50px;
+    text-align: center;
+    transition: transform 0.3s ease-in-out;
+}
+
+/* 3. Add a subtle hover effect (optional but recommended for a modern feel) */
+.profile-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.45);
+}
+
+/* 4. Style Headings and text within the card for contrast */
+.profile-card h1, .profile-card h2 {
+    color: #4dc4ff; /* Vibrant blue for contrast */
+    text-shadow: 0 0 5px rgba(77, 196, 255, 0.5); /* Glowing text effect */
+}
+
+/* 5. Style the "Edit Profile" button to match the theme */
+.details-button {
+    background-color: #007bff; /* Primary Blue */
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 8px;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.details-button:hover {
+    background-color: #0056b3;
+    box-shadow: 0 0 10px #007bff;
+}
+    </style>
+</div>
+{% endblock %}

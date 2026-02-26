@@ -1,0 +1,222 @@
+{% extends "base.html" %} 
+{% load static %}
+
+{% block content %}
+<style>
+    :root {
+        --bg-deep: #020617;
+        --accent-cyan: #0ea5e9;
+        --glass-surface: rgba(15, 23, 42, 0.7);
+        --glass-border: rgba(56, 189, 248, 0.15);
+        --text-dim: #94a3b8;
+    }
+
+    body {
+        background: radial-gradient(circle at top, #082f49 0%, #020617 100%) fixed;
+        color: white;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .glass-header {
+        font-size: 2.2rem;
+        font-weight: 800;
+        letter-spacing: -1px;
+        margin-bottom: 30px;
+        background: linear-gradient(to bottom, #fff, var(--text-dim));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    /* --- THE GLASS CONSOLE CARD --- */
+    .event-card {
+        background: var(--glass-surface);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid var(--glass-border);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+
+    .section-title {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: var(--accent-cyan);
+        margin-bottom: 20px;
+        font-weight: 700;
+    }
+
+    /* --- FORM STYLING --- */
+    label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--text-dim);
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    input, select, textarea {
+        background: rgba(255, 255, 255, 0.03) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 10px;
+        padding: 12px;
+        color: white !important;
+        font-size: 0.9rem;
+        width: 100%;
+        transition: 0.3s;
+        margin-bottom: 15px;
+    }
+
+    input:focus, textarea:focus {
+        outline: none;
+        border-color: var(--accent-cyan) !important;
+        box-shadow: 0 0 15px rgba(14, 165, 233, 0.2);
+    }
+
+    .btn-create {
+        background: var(--accent-cyan);
+        color: white;
+        border: none;
+        padding: 14px 40px;
+        border-radius: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: 0.3s;
+    }
+
+    .btn-create:hover {
+        background: #0284c7;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(14, 165, 233, 0.3);
+    }
+
+    /* --- GLASS TABLE --- */
+    .glass-table-container {
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid var(--glass-border);
+        border-radius: 15px;
+        overflow: hidden;
+        margin-top: 20px;
+    }
+
+    .table { color: white; margin-bottom: 0; }
+    .table thead { background: rgba(56, 189, 248, 0.05); }
+    .table th { border: none; font-size: 0.75rem; text-transform: uppercase; color: var(--text-dim); padding: 15px; }
+    .table td { border-top: 1px solid rgba(255, 255, 255, 0.05); padding: 15px; vertical-align: middle; }
+
+    .badge-published { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
+    .badge-draft { background: rgba(234, 179, 8, 0.15); color: #fde047; border: 1px solid rgba(234, 179, 8, 0.3); }
+
+    .action-btn { font-size: 0.8rem; text-decoration: none; margin-right: 10px; font-weight: 600; }
+    .edit-link { color: var(--accent-cyan); }
+    .delete-link { color: #f87171; }
+</style>
+
+<div class="container py-5">
+    <h2 class="glass-header">Events Management</h2>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert" style="background: rgba(14, 165, 233, 0.1); border: 1px solid var(--accent-cyan); color: white;">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="event-card">
+        <div class="section-title">Initialize New Company Event</div>
+        
+        <form method="post" action="{% url 'admin_events_page' %}">
+            {% csrf_token %}
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <label>Event Title</label>
+                    {{ form.title }}
+                </div>
+                <div class="col-md-6">
+                    <label>Location</label>
+                    {{ form.location }}
+                </div>
+            </div>
+
+            <div class="row mt-2">
+                <div class="col-md-4">
+                    <label>Event Date</label>
+                    {{ form.date }}
+                </div>
+                <div class="col-md-4">
+                    <label>Start Time</label>
+                    {{ form.start_time }}
+                </div>
+                <div class="col-md-4">
+                    <label>End Time</label>
+                    {{ form.end_time }}
+                </div>
+            </div>
+
+            <div class="row mt-2">
+                <div class="col-12">
+                    <label>Description & Intelligence</label>
+                    {{ form.description }}
+                </div>
+            </div>
+
+            <div class="d-flex align-items-center mt-3">
+                <div class="form-check">
+                    {{ form.is_published }}
+                    <label class="form-check-label ms-2" style="display: inline-block;">Publish Node Immediately?</label>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn-create mt-4">Broadcast Event</button>
+        </form>
+    </div>
+    
+    <div class="mt-5">
+        <div class="section-title">Authorized Event Streams</div>
+        <div class="glass-table-container">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Timestamp</th>
+                            <th>Time Span</th>
+                            <th>Location</th>
+                            <th>Status</th>
+                            <th>Terminal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for event in events %}
+                        <tr>
+                            <td class="fw-bold">{{ event.title }}</td>
+                            <td>{{ event.date|date:"M d, Y" }}</td>
+                            <td>{{ event.start_time|time:"g:i A" }} - {{ event.end_time|time:"g:i A"|default:"N/A" }}</td>
+                            <td>{{ event.location|default:"---" }}</td>
+                            <td>
+                                <span class="badge {% if event.is_published %}badge-published{% else %}badge-draft{% endif %}">
+                                    {{ event.is_published|yesno:"PUBLISHED,DRAFT" }}
+                                </span>
+                            </td>
+                            <td>
+                                <a href="#" class="action-btn edit-link">EDIT</a> 
+                                <a href="#" class="action-btn delete-link">DELETE</a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">No active event streams found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

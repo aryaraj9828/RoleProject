@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* Full Page Background */
+    body {
+        background: radial-gradient(circle at top, #0f172a 0%, #020617 100%);
+        min-height: 100vh;
+        color: #f8fafc;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* Glass Effect Container */
+    .glass-container {
+        background: rgba(15, 23, 42, 0.7);
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(56, 189, 248, 0.3);
+        border-radius: 15px;
+        padding: 40px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+        max-width: 800px;
+        margin: 50px auto;
+    }
+
+    .section-title {
+        color: #38bdf8;
+        font-weight: 700;
+        border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+        padding-bottom: 15px;
+        margin-bottom: 30px;
+        text-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+    }
+
+    /* Form Layout Fixes */
+    .custom-form-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .custom-form-row label {
+        flex: 0 0 150px; /* Fixed width for all labels ensures perfect alignment */
+        font-weight: 500;
+        color: #94a3b8;
+        margin-bottom: 0;
+    }
+
+    .custom-form-row .input-container {
+        flex: 1;
+    }
+
+    /* Input Styling */
+    input, select {
+        width: 100%;
+        background: rgba(2, 6, 23, 0.6) !important;
+        border: 1px solid #334155 !important;
+        color: #f8fafc !important;
+        padding: 10px 15px !important;
+        border-radius: 8px !important;
+        outline: none;
+    }
+
+    input:focus, select:focus {
+        border-color: #38bdf8 !important;
+        box-shadow: 0 0 8px rgba(56, 189, 248, 0.4) !important;
+    }
+
+    /* Neon Button */
+    .btn-create {
+        background: #0ea5e9;
+        border: none;
+        color: white;
+        padding: 12px 30px;
+        border-radius: 8px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 0 15px rgba(14, 165, 233, 0.4);
+        transition: all 0.3s ease;
+        margin-left: 150px; /* Aligns button with inputs, not labels */
+    }
+
+    .btn-create:hover {
+        background: #38bdf8;
+        box-shadow: 0 0 25px rgba(14, 165, 233, 0.7);
+        transform: translateY(-2px);
+    }
+
+    /* Table Design */
+    .table { color: #e2e8f0; margin-top: 20px; }
+    .table thead th { color: #38bdf8; border-bottom: 2px solid rgba(56, 189, 248, 0.3); }
+    .table tbody td { border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+</style>
+
+<div class="container">
+    <div class="glass-container">
+        <h2 class="section-title">Admin Shift Management</h2>
+
+        <h5 class="mb-4" style="color: #94a3b8;">Add New Shift</h5>
+        <form method="post" action="{% url 'add_shift_url' %}">
+            {% csrf_token %}
+            
+            <div class="custom-form-row">
+                <label for="{{ form.employee.id_for_label }}">Employee:</label>
+                <div class="input-container">{{ form.employee }}</div>
+            </div>
+
+            <div class="custom-form-row">
+                <label for="{{ form.date.id_for_label }}">Date:</label>
+                <div class="input-container">{{ form.date }}</div>
+            </div>
+
+            <div class="custom-form-row">
+                <label for="{{ form.start_time.id_for_label }}">Start time:</label>
+                <div class="input-container">{{ form.start_time }}</div>
+            </div>
+
+            <div class="custom-form-row">
+                <label for="{{ form.end_time.id_for_label }}">End time:</label>
+                <div class="input-container">{{ form.end_time }}</div>
+            </div>
+
+            <button type="submit" class="btn btn-create">Create Shift</button>
+        </form>
+
+        <hr class="my-5" style="border-color: rgba(255,255,255,0.1);">
+
+        <h5 class="mb-3" style="color: #94a3b8;">Existing Shifts</h5>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Employee</th>
+                        <th>Date</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for shift in shifts %}
+                    <tr>
+                        <td>{{ shift.employee.username }}</td>
+                        <td>{{ shift.date }}</td>
+                        <td class="text-info">{{ shift.start_time }}</td>
+                        <td class="text-warning">{{ shift.end_time }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center text-muted">No shifts scheduled yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock content %}
