@@ -1,4 +1,4 @@
-{% load static %}
+<!-- {% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -159,6 +159,237 @@
         <form method="post" novalidate>
             {% csrf_token %}
             
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="{{ form.username.id_for_label }}">Username</label>
+                    {{ form.username }}
+                    {% if form.username.errors %}<div class="error-msg">{{ form.username.errors.0 }}</div>{% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.email.id_for_label }}">Email Address</label>
+                    {{ form.email }}
+                    {% if form.email.errors %}<div class="error-msg">{{ form.email.errors.0 }}</div>{% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.role.id_for_label }}">Assign Role</label>
+                    {{ form.role }}
+                    {% if form.role.errors %}<div class="error-msg">{{ form.role.errors.0 }}</div>{% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.password1.id_for_label }}">Password</label>
+                    {{ form.password1 }}
+                    {% if form.password1.errors %}<div class="error-msg">{{ form.password1.errors.0 }}</div>{% endif %}
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="{{ form.password2.id_for_label }}">Confirm Password</label>
+                    {{ form.password2 }}
+                    {% if form.password2.errors %}<div class="error-msg">{{ form.password2.errors.0 }}</div>{% endif %}
+                </div>
+
+                <button type="submit" class="btn-submit">Initialize Account</button>
+            </div>
+        </form>
+
+        <div class="footer-links">
+            <a href="{% url 'home' %}"><i class="fas fa-arrow-left me-2"></i> Return to Main Terminal</a>
+        </div>
+    </div>
+
+</body>
+</html> -->
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CommitsDB | Secure Registration</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #020617;
+            --accent: #0ea5e9;
+            --glass: rgba(15, 23, 42, 0.7);
+            --border: rgba(56, 189, 248, 0.2);
+            --text-dim: #94a3b8;
+        }
+
+        * { box-sizing: border-box; }
+
+        html { -webkit-text-size-adjust: 100%; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            min-height: 100dvh;
+            padding: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
+            background: radial-gradient(circle at top, #082f49 0%, #020617 100%);
+            background-attachment: fixed;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .registration-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px) saturate(160%);
+            -webkit-backdrop-filter: blur(20px) saturate(160%);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: clamp(24px, 5vw, 40px);
+            width: 100%;
+            max-width: 700px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+        }
+
+        h2 {
+            font-size: clamp(1.5rem, 6vw, 2rem);
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin: 0 0 5px;
+            text-align: center;
+        }
+
+        .subtitle {
+            color: var(--text-dim);
+            text-align: center;
+            font-size: 0.9rem;
+            margin: 0 0 clamp(20px, 5vw, 35px);
+        }
+
+        /* Form Grid Layout */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            min-width: 0; /* stops long content from stretching the grid */
+        }
+
+        .full-width {
+            grid-column: span 2;
+        }
+
+        label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-dim);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        /* Styling the Actual Input Tags */
+        input, select {
+            width: 100%;
+            min-width: 0;
+            background: rgba(255, 255, 255, 0.03) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 12px;
+            padding: 14px;
+            color: white !important;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: 0.3s;
+        }
+
+        select option { color: #0f172a; }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--accent) !important;
+            background: rgba(255, 255, 255, 0.07) !important;
+            box-shadow: 0 0 15px rgba(14, 165, 233, 0.2);
+        }
+
+        .btn-submit {
+            grid-column: span 2;
+            background: var(--accent);
+            color: white;
+            padding: 16px;
+            min-height: 48px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .btn-submit:hover {
+            background: #0284c7;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(14, 165, 233, 0.4);
+        }
+
+        .error-msg {
+            color: #f87171;
+            font-size: 0.8rem;
+            margin-top: 5px;
+            overflow-wrap: anywhere;
+        }
+
+        .footer-links {
+            grid-column: span 2;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .footer-links a {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: 0.3s;
+            display: inline-block;
+            padding: 8px;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        /* --- Responsive --- */
+        @media (max-width: 600px) {
+            body { align-items: flex-start; padding: 24px 12px; }
+            .form-grid { grid-template-columns: 1fr; gap: 16px; }
+            .full-width { grid-column: span 1; }
+            .btn-submit { grid-column: span 1; margin-top: 10px; letter-spacing: 1px; }
+            .registration-card { border-radius: 20px; }
+            .footer-links { margin-top: 20px; }
+            /* 16px stops iOS from zooming in when a field is focused */
+            input, select { font-size: 16px; }
+            .btn-submit:hover { transform: none; }
+        }
+
+        @media (max-height: 520px) and (orientation: landscape) {
+            body { align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="registration-card">
+        <h2>Register Node</h2>
+        <p class="subtitle">Create a new authorized portal entity</p>
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+
             <div class="form-grid">
                 <div class="form-group">
                     <label for="{{ form.username.id_for_label }}">Username</label>
